@@ -28,7 +28,6 @@ The system uses two core components:
 
 1. `Noeud.java`: Acts as the node in the data structure, carrying the coefficient (`double`), the exponent (`int`), and a pointer to the next node (`Noeud prochain`).
 
-
    *Visual representation of a 3 term polynomial:*
 
    ```java
@@ -38,13 +37,12 @@ The system uses two core components:
    ===============     ===============      =================
    | coeff: 5    |     | coeff: 6    |      | coeff: 8      |
    | exponent: 9 |     | exponent: 4 |      | exponent: 2   | 
-   | prochain: * |---->| prochain: * | ---->| prochain: null | 
+   | prochain: * |---->| prochain: * | ---->| prochain: null| 
    ===============     ===============      =================
    ```
 
 
-
-4. `Polynome.java`: Manages the chain of nodes, safeguarding head (`premier`) and tail (`dernier`) pointers, and driving the mathematical operations.
+2.  `Polynome.java`: Manages the chain of nodes, safeguarding head (`premier`) and tail (`dernier`) pointers, and driving the mathematical operations.
 
 
 ## how to run the tests
