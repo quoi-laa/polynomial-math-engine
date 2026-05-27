@@ -12,7 +12,6 @@ This assignment was designed to test core principles of computer science by enfo
 2. **No Native Arrays:** Declaring standard arrays was forbidden.
 3. **Custom Pointer Manipulation:** Node linking and sorting were built from scratch
 
-
 ## supported features
 
 * **Dynamic Insertion** Automatically handles combining like-terms when a new term with an existing exponent is added.
@@ -20,7 +19,6 @@ This assignment was designed to test core principles of computer science by enfo
 * **Scalar & Polynomial Multiplication**: Supports multiplying by a constant or by another polynomial
 * **Calculus Differentiation**: Calculates and returns the mathematical derivative of the current expression
 * **String Formatting**: Overrides `toString()` to display expressions in the standard console
-
 
 ## technical details & architecture
 
@@ -40,10 +38,7 @@ The system uses two core components:
    | prochain: * |---->| prochain: * | ---->| prochain: null| 
    ===============     ===============      =================
    ```
-
-
-2.  `Polynome.java`: Manages the chain of nodes, safeguarding head (`premier`) and tail (`dernier`) pointers, and driving the mathematical operations.
-
+2. `Polynome.java`: Manages the chain of nodes, safeguarding head (`premier`) and tail (`dernier`) pointers, and driving the mathematical operations.
 
 ## how to run the tests
 
@@ -62,7 +57,6 @@ The system uses two core components:
 ## expected execution output
 
 ```
-
 === OK: Single term (constant) 
 [ Result: 10 ]
 
@@ -93,22 +87,34 @@ The system uses two core components:
 === OK: 10th derivative (5x^4 + -22x^3 + 13x^2 + 7) 
 [ Result: 0 ]
 
+=== OK: New Polynomial 
+[ Result: 2.1x^6 ]
+
+=== OK: Adding to end 
+[ Result: 2.1x^6 + 6 ]
+
 === OK: Adding to beginning 
 [ Result: 6x^86 + 2.1x^6 + 6 ]
 
-=== OK: Adding between two terms 
+=== OK: Adding between terms 
 [ Result: 6x^86 + 3x^9 + 2.1x^6 + 6 ]
 
 === OK: Adding between terms 
 [ Result: 6x^86 + 6.5x^12 + 3x^9 + 2.1x^6 + 6 ]
 
-=== OK: Adding two polynomials: ( 6x^86 + 6.5x^12 + 3x^9 + 2.1x^6 + 6 ) + ( -8x^86 + 5x^6 ) 
-[ Result: -66x^86 + 6.5x^12 + 3x^9 + 27.1x^6 + 6 ]
+=== OK: Summing term with same exponents 
+[ Result: 6x^86 + 6.5x^12 + 3x^9 + 2.1x^6 + 10 ]
 
-=== OK: Multiplying by a constant: ( -66x^86 + 6.5x^12 + 3x^9 + 27.1x^6 + 6 ) * 6.5 
-[ Result: -429x^86 + 42.25x^12 + 19.5x^9 + 176.15x^6 + 39 ]
+=== OK: Summing term with same exponents 
+[ Result: 6x^86 + 15x^12 + 3x^9 + 2.1x^6 + 10 ]
 
-=== OK: Multiplying by zero: ( -429x^86 + 42.25x^12 + 19.5x^9 + 176.15x^6 + 39 ) * 0 
+=== OK: Adding two polynomials: ( 6x^86 + 15x^12 + 3x^9 + 2.1x^6 + 10 ) + ( -8x^86 + 5x^6 ) 
+[ Result: -2x^86 + 15x^12 + 3x^9 + 7.1x^6 + 10 ]
+
+=== OK: Multiplying by a constant: ( -2x^86 + 15x^12 + 3x^9 + 7.1x^6 + 10 ) * 6.5 
+[ Result: -13x^86 + 97.5x^12 + 19.5x^9 + 46.15x^6 + 65 ]
+
+=== OK: Multiplying by zero: ( -13x^86 + 97.5x^12 + 19.5x^9 + 46.15x^6 + 65 ) * 0 
 [ Result: 0 ]
 
 === OK: Multiplying two polynomials: (10x^2 + -20) * (75x^4 + 5.5x^2 + 3x) 
