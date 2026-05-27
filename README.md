@@ -115,7 +115,7 @@ The system uses two core components:
 [ Result: -13x^86 + 97.5x^12 + 19.5x^9 + 46.15x^6 + 65 ]
 
 === OK: Multiplying by zero: ( -13x^86 + 97.5x^12 + 19.5x^9 + 46.15x^6 + 65 ) * 0 
-[ Result: 0 ]
+[ Result:  ]
 
 === OK: Multiplying two polynomials: (10x^2 + -20) * (75x^4 + 5.5x^2 + 3x) 
 [ Result: 750x^6 + -1445x^4 + 30x^3 + -110x^2 + -60x ]
