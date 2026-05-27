@@ -29,60 +29,53 @@ public class Polynome {
      */
     public void ajouter(double coeff, int exposant){
 
+        if(coeff == 0){
+            return;
+        }
+
         Noeud nouveauTerme = new Noeud(coeff, exposant);
         Noeud courant = premier;
+        Noeud precedent = null;
 
         //If polynomial is empty
         if(premier == null){
             premier = nouveauTerme;
             dernier = nouveauTerme;
             nbTermes ++;
-
             return;
         }
 
-        //else we traverse it
-        while(courant != null){
-
-            //sum of coefficients if exponents are equal
-            if(nouveauTerme.exposant == courant.exposant){
-                courant.coeff += nouveauTerme.coeff;
-                return;
-            }
-
-            //we insert the term in the polynomial
-            //insertion at the beginning
-            if(courant == premier && nouveauTerme.exposant > courant.exposant){
-                premier = nouveauTerme;
-                nouveauTerme.prochain = courant;
-                nbTermes++;
-                return;
-            }
-
-            
-            //insertion at the end polynomial
-            if(nouveauTerme.exposant < courant.exposant && courant.prochain == null){
-                courant.prochain = nouveauTerme;
-                nbTermes++;
-                return;
-            }            
-            //insertion in the polynomial between two terms
-            if(nouveauTerme.exposant < courant.exposant && nouveauTerme.exposant > courant.prochain.exposant){
-                
-                //new term points to current.next
-                nouveauTerme.prochain = courant.prochain;
-                
-                //current.next points to new term
-                courant.prochain = nouveauTerme;
-                
-                nbTermes++;
-                return;
-            }
-
+        //else we traverse to see where new term will be
+        while(courant != null && courant.exposant > exposant){
+            precedent = courant;
             courant = courant.prochain;
-
         }
-    }
+
+        //sum of coefficients if exponents are equal
+        if(courant != null && courant.exposant == exposant){
+            courant.coeff += coeff;
+            return;
+        }
+
+        //insertion at the beginning
+        if(precedent == null){
+            nouveauTerme.prochain = premier;
+            premier = nouveauTerme;
+        }
+
+        //insertion in middle or end of polynomial
+        else{
+            nouveauTerme.prochain = courant;
+            precedent.prochain = nouveauTerme;
+
+            //if insertion at end, update the last item pointer
+            if(courant == null){
+                dernier = nouveauTerme;
+            }
+        }
+
+        nbTermes++;
+        }
 
 
     /**
@@ -97,19 +90,19 @@ public class Polynome {
         Polynome resultat = new Polynome();
 
         //support nodes for reading polynomial
-        Noeud termePolynm1 = premier;
-        Noeud termePolynm2 = autre.premier;
+        Noeud termePoly1 = premier;
+        Noeud termePoly2 = autre.premier;
 
         //copy first polynomial into resultat
         for(int i = 0; i < this.nbTermes; i++){
-            resultat.ajouter(termePolynm1.coeff, termePolynm1.exposant);
-            termePolynm1 = termePolynm1.prochain;
+            resultat.ajouter(termePoly1.coeff, termePoly1.exposant);
+            termePoly1 = termePoly1.prochain;
         }
 
         //adding terms of second polynomial into resultat
         for(int j = 0; j < autre.nbTermes; j++){
-            resultat.ajouter(termePolynm2.coeff, termePolynm2.exposant);
-            termePolynm2 = termePolynm2.prochain;
+            resultat.ajouter(termePoly2.coeff, termePoly2.exposant);
+            termePoly2 = termePoly2.prochain;
         }
 
         return resultat;
@@ -152,8 +145,8 @@ public class Polynome {
      */
     public Polynome multiplier(Polynome autre) {
 
-        Noeud termePolynm1 = premier;
-        Noeud termePolynm2 = autre.premier;
+        Noeud termePoly1 = premier;
+        Noeud termePoly2 = autre.premier;
 
         Polynome resultat = new Polynome();
 
@@ -161,15 +154,15 @@ public class Polynome {
 
             for(int j = 0; j < autre.nbTermes; j++){
 
-                    resultat.ajouter(termePolynm1.coeff * termePolynm2.coeff, termePolynm1.exposant + termePolynm2.exposant);
+                    resultat.ajouter(termePoly1.coeff * termePoly2.coeff, termePoly1.exposant + termePoly2.exposant);
 
-                    termePolynm2 = termePolynm2.prochain;
+                    termePoly2 = termePoly2.prochain;
                 }
 
             //return to beginning of 2nd polynomial to restart multiplication
-            termePolynm2 = autre.premier;
+            termePoly2 = autre.premier;
 
-            termePolynm1 = termePolynm1.prochain;
+            termePoly1 = termePoly1.prochain;
 
             }
 
@@ -360,7 +353,7 @@ public class Polynome {
 
         Polynome p5 = new Polynome();
         p5 = p4.multiplier(0);
-        assertTest(p5.toString().equals("0"), "Multiplying by zero: ( %s ) * 0".formatted(p4.toString()), p5.toString());
+        assertTest(p5.toString().equals(""), "Multiplying by zero: ( %s ) * 0".formatted(p4.toString()), p5.toString());
 
         Polynome p6 = new Polynome();
         p6.ajouter(10, 2);
