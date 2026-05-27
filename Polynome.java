@@ -22,86 +22,65 @@ public class Polynome {
     /**
      * Adds a term cx^e to a polynomial
      * Terms are added in descending order of exponent
+     * Terms of same exponents have their coefficients summed
      *
      * @param coeff: coefficient c of the term to be added
      * @param exposant: exponent e of the term to be added
      */
     public void ajouter(double coeff, int exposant){
 
-        Noeud n = new Noeud(coeff, exposant);
-        boolean elementAjoute = false;
+        Noeud nouveauTerme = new Noeud(coeff, exposant);
+        Noeud courant = premier;
 
         //If polynomial is empty
         if(premier == null){
-            premier = n;
-            dernier = n;
+            premier = nouveauTerme;
+            dernier = nouveauTerme;
+            nbTermes ++;
 
-            nbTermes += 1;
+            return;
         }
 
-        //Linking term to existing polynomial 
-        else{
+        //else we traverse it
+        while(courant != null){
 
-            //Sum of coefficients of first term if exponents are equal
-            if(n.exposant == premier.exposant){
-                    premier.coeff = premier.coeff + n.coeff;
+            //sum of coefficients if exponents are equal
+            if(nouveauTerme.exposant == courant.exposant){
+                courant.coeff += nouveauTerme.coeff;
+                return;
             }
 
-            //Linking term at beginning of polynomial
-            if(n.exposant > premier.exposant){
-                n.prochain = premier;
-                premier = n;
-
-                nbTermes += 1;
+            //we insert the term in the polynomial
+            //insertion at the beginning
+            if(courant == premier && nouveauTerme.exposant > courant.exposant){
+                premier = nouveauTerme;
+                nouveauTerme.prochain = courant;
+                nbTermes++;
+                return;
             }
 
-            else {
-
-                //Support nodes for polynomial traversal
-                Noeud terme = premier;
-                Noeud elementSuivant = terme.prochain;
-
-                //polynomial traversal
-                while((terme != null) && (elementSuivant != null)){
-
-                    //sum of coefficients if exponents are equal and if n is new
-                    if((n.exposant == terme.exposant) && elementAjoute == false){
-
-                        terme.coeff = terme.coeff + n.coeff;
-                    }
-
-                    //Linking term between two elements
-                    if((terme.exposant > n.exposant) && (n.exposant > elementSuivant.exposant)){
-
-                        terme.prochain = n;
-                        n.prochain = elementSuivant;
-
-                        //avoids adding a duplicate element
-                        elementAjoute = true;
-
-                        nbTermes += 1;
-                    }
-
-                    terme = terme.prochain;
-                    elementSuivant = terme.prochain;
-                }
-
-
-            //sum of coefficients to last term is exponents are equal
-            if(n.exposant == terme.exposant){
-                    terme.coeff = terme.coeff + n.coeff;
-                }
-
-
-            //Linking term to end of polynomial
-            if((terme.exposant > n.exposant) && (elementSuivant == null)){
-
-                terme.prochain = n;
-                n.prochain = null;
-
-                nbTermes += 1;
-                }
+            
+            //insertion at the end polynomial
+            if(nouveauTerme.exposant < courant.exposant && courant.prochain == null){
+                courant.prochain = nouveauTerme;
+                nbTermes++;
+                return;
+            }            
+            //insertion in the polynomial between two terms
+            if(nouveauTerme.exposant < courant.exposant && nouveauTerme.exposant > courant.prochain.exposant){
+                
+                //new term points to current.next
+                nouveauTerme.prochain = courant.prochain;
+                
+                //current.next points to new term
+                courant.prochain = nouveauTerme;
+                
+                nbTermes++;
+                return;
             }
+
+            courant = courant.prochain;
+
         }
     }
 
@@ -121,41 +100,18 @@ public class Polynome {
         Noeud termePolynm1 = premier;
         Noeud termePolynm2 = autre.premier;
 
-        int i = 0, j = 0;
-
-        //linking of 1st polynomial in resultat
-        while( i < nbTermes){
-
+        //copy first polynomial into resultat
+        for(int i = 0; i < this.nbTermes; i++){
             resultat.ajouter(termePolynm1.coeff, termePolynm1.exposant);
-
             termePolynm1 = termePolynm1.prochain;
-
-            i += 1;
         }
 
-        //linking of 2nd polynomial in resultat
-        //sum of coefficients if exponents are equal
-        while(j < autre.nbTermes){
-
-            Noeud termeResultat = resultat.premier;
-
-            //traversal of resultat
-            while(termeResultat != null){
-
-                if(termePolynm2.exposant == termeResultat.exposant){
-                    termeResultat.coeff = termeResultat.coeff + termePolynm2.coeff;
-                }
-
-                else{
-                    resultat.ajouter(termePolynm2.coeff, termePolynm2.exposant);
-                }
-
-                termeResultat = termeResultat.prochain;
-            }
-
-            j += 1;
+        //adding terms of second polynomial into resultat
+        for(int j = 0; j < autre.nbTermes; j++){
+            resultat.ajouter(termePolynm2.coeff, termePolynm2.exposant);
             termePolynm2 = termePolynm2.prochain;
         }
+
         return resultat;
     }
 
@@ -324,9 +280,7 @@ public class Polynome {
     }
 
     public static void main(String[] args) {
-
-        String title = "=== POLYNOMIAL: ";
-
+        
         Polynome p = new Polynome();
 
         p = new Polynome();
@@ -367,33 +321,41 @@ public class Polynome {
                    .derivee().derivee().derivee().derivee().derivee();
         assertTest(derivee.toString().equals("0"), 
         "10th derivative (%s)".formatted(p.toString()), derivee.toString());
-
+        
 
         Polynome p1 = new Polynome();
         p1.ajouter(2.1, 6);     
+        assertTest(p1.toString().equals("2.1x^6"), "New Polynomial", p1.toString());
+
         p1.ajouter(6, 0);
-        
+        assertTest(p1.toString().equals("2.1x^6 + 6"), "Adding to end", p1.toString());
+
         p1.ajouter(6, 86);
         assertTest(p1.toString().equals("6x^86 + 2.1x^6 + 6"), "Adding to beginning", p1.toString());    
         
-
         p1.ajouter(3, 9);
-        assertTest(p1.toString().equals("6x^86 + 3x^9 + 2.1x^6 + 6"), "Adding between two terms", p1.toString());    
+        assertTest(p1.toString().equals("6x^86 + 3x^9 + 2.1x^6 + 6"), "Adding between terms", p1.toString());    
 
         p1.ajouter(6.5, 12);
         assertTest(p1.toString().equals("6x^86 + 6.5x^12 + 3x^9 + 2.1x^6 + 6"), 
         "Adding between terms", p1.toString());
 
+        p1.ajouter(4, 0);
+        assertTest(p1.toString().equals("6x^86 + 6.5x^12 + 3x^9 + 2.1x^6 + 10"), "Summing term with same exponents", p1.toString());
+
+        p1.ajouter(8.5, 12);
+        assertTest(p1.toString().equals("6x^86 + 15x^12 + 3x^9 + 2.1x^6 + 10"), "Summing term with same exponents", p1.toString());
+        
         Polynome p2 = new Polynome();
         p2.ajouter(5, 6);   p2.ajouter(-8, 86);
 
         Polynome p3 = p1.additionner(p2);
-        assertTest(p3.toString().equals("-66x^86 + 6.5x^12 + 3x^9 + 27.1x^6 + 6"), 
+        assertTest(p3.toString().equals("-2x^86 + 15x^12 + 3x^9 + 7.1x^6 + 10"), 
         "Adding two polynomials: ( %s ) + ( %s )".formatted(p1.toString(), p2.toString()), p3.toString());
 
         double c = 6.5;
         Polynome p4 = p3.multiplier(c);
-        assertTest(p4.toString().equals("-429x^86 + 42.25x^12 + 19.5x^9 + 176.15x^6 + 39"), 
+        assertTest(p4.toString().equals("-13x^86 + 97.5x^12 + 19.5x^9 + 46.15x^6 + 65"), 
         "Multiplying by a constant: ( %s ) * %1.1f".formatted(p3.toString(), c), p4.toString());
 
         Polynome p5 = new Polynome();
@@ -412,5 +374,6 @@ public class Polynome {
         Polynome p8 = p6.multiplier(p7);
         assertTest(p8.toString().equals("750x^6 + -1445x^4 + 30x^3 + -110x^2 + -60x"), 
         "Multiplying two polynomials: (%s) * (%s)".formatted(p6.toString(), p7.toString()), p8.toString());
+        
     }
 }
